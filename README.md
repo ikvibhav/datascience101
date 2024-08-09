@@ -1,7 +1,7 @@
 # DataScience 101
 
 ## Description
-A repository to document my learnings and code that is related to data science
+A repository to document my learnings and code related to data science
 
 ## Setup Instructions
 
@@ -18,4 +18,11 @@ source venv/bin/activate
 ### 3. Install the packages from requirements.txt
 ```sh
 pip install -r requirements.txt
+```
+
+## Running Instructions
+
+### 1. Using Bash Terminal
+```sh
+streamlit run app.py
 ```
