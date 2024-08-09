@@ -69,6 +69,7 @@ def main():
     (X, Y) = load_ucimlrepo_mushroomdata()
     X_encoded = encode_labels(X)
     Y_encoded = encode_labels(Y)
+    class_names = ["edible", "poisonous"]
 
     if st.sidebar.checkbox("Show Dataset", False):
         st.subheader("Mushroom Dataset - Features (X)")
@@ -108,7 +109,7 @@ def main():
 
     if st.sidebar.button("Classify", key='classify'):
         st.subheader(f"{classifier} Results")
-        train_and_evaluate(model, X_train, Y_train, X_test, Y_test, metrics, ["edible", "poisonous"])
+        train_and_evaluate(model, X_train, Y_train, X_test, Y_test, metrics, class_names)
 
 
 if __name__ == '__main__':
