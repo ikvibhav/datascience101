@@ -56,6 +56,15 @@ def train_and_evaluate(model, X_train, Y_train, X_test, Y_test, metrics, class_n
     st.write(f"Accuracy: {accuracy:.2f}")
     st.write(f"Precision: {precision_score(Y_test, Y_pred):.2f}")
     st.write(f"Recall: {recall_score(Y_test, Y_pred):.2f}")
+
+    # Metrics Defintions
+    st.subheader("Metric Definitions")
+    st.markdown("""
+    - **Accuracy**: The ratio of correctly predicted instances to the total instances.
+    - **Precision**: The ratio of correctly predicted positive instances to the total predicted positive instances.
+    - **Recall**: The ratio of correctly predicted positive instances to the total actual positive instances.
+    """)
+
     plot_metrics(metrics, class_names, model, X_test, Y_test)
 
 
@@ -69,7 +78,6 @@ def main():
     (X, Y) = load_ucimlrepo_mushroomdata()
     X_encoded = encode_labels(X)
     Y_encoded = encode_labels(Y)
-    import pdb; pdb.set_trace()
     class_names = ["edible", "poisonous"]
 
     if st.sidebar.checkbox("Show Dataset", False):
