@@ -60,15 +60,16 @@ def train_and_evaluate(model, X_train, Y_train, X_test, Y_test, metrics, class_n
 
 
 def main():
-    st.title("Binary Classification Web App")
+    st.title("Binary Classification")
 
     # Creates a sidebar that allows the user to modify the app
-    st.sidebar.title("Control the Web App using this panel")
+    st.sidebar.title("Control Panel")
 
     # Load the dataset
     (X, Y) = load_ucimlrepo_mushroomdata()
     X_encoded = encode_labels(X)
     Y_encoded = encode_labels(Y)
+    import pdb; pdb.set_trace()
     class_names = ["edible", "poisonous"]
 
     if st.sidebar.checkbox("Show Dataset", False):
@@ -81,11 +82,13 @@ def main():
     # Split the data into training and testing sets
     X_train, X_test, Y_train, Y_test = train_test_split(X_encoded, Y_encoded, test_size=0.3, random_state=0)
 
-    # Choose a classifier
-    st.sidebar.subheader("Choose a classifier")
-    classifier = st.sidebar.selectbox("Classifiers", ("Support Vector Machine (SVM)", "Logistic Regression", "Random Forest"))
+    # Select a classifier
+    st.sidebar.subheader("Select a classifier")
+    classifier = st.sidebar.selectbox("Available Classifiers", ("Support Vector Machine (SVM)", "Logistic Regression", "Random Forest"))
 
-    metrics = st.sidebar.multiselect("Select metrics to plot", ("Confusion Matrix", "ROC Curve", "Precision-Recall Curve"))
+    # Select a metric
+    st.sidebar.subheader("Select a metric")
+    metrics = st.sidebar.multiselect("Available Metrics", ("Confusion Matrix", "ROC Curve", "Precision-Recall Curve"))
 
     if classifier == 'Support Vector Machine (SVM)':
         st.sidebar.subheader("Model Hyperparameters")
