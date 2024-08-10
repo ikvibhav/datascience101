@@ -17,11 +17,18 @@ from ucimlrepo import fetch_ucirepo
 import matplotlib.pyplot as plt
 
 
+def load_ucimlrepo_data(dataset_id: int, class_names: list) -> tuple:
+    dataset = fetch_ucirepo(id=dataset_id)
+    return dataset.data.features, dataset.data.targets, class_names
+
 def load_ucimlrepo_mushroomdata() -> tuple:
-    # source - https://archive.ics.uci.edu/dataset/73/mushroom
-    # p - poisonous, e - edible
-    mushroom = fetch_ucirepo(id=73)
-    return mushroom.data.features, mushroom.data.targets
+    return load_ucimlrepo_data(73, ["edible", "poisonous"])
+
+def load_ucimlrepo_breastcancer() -> tuple:
+    return load_ucimlrepo_data(15, ["benign", "malignant"])
+
+def load_ucimlrepo_diabetes_data() -> tuple:
+    return load_ucimlrepo_data(891, ["positive", "negative"])
 
 
 @st.cache_data
@@ -34,19 +41,21 @@ def encode_labels(data: pd.DataFrame):
 
 def plot_metrics(metrics_list: list, class_names: list, model=None, X_test=None, Y_test=None):
     if "Confusion Matrix" in metrics_list:
+        fig, ax = plt.subplots()
         st.subheader("Confusion Matrix")
-        ConfusionMatrixDisplay.from_estimator(model, X_test, Y_test, display_labels=class_names).plot()
-        st.pyplot()
+        ConfusionMatrixDisplay.from_estimator(model, X_test, Y_test, display_labels=class_names, ax=ax)
+        st.pyplot(fig)
     
     if "ROC Curve" in metrics_list:
+        fig, ax = plt.subplots()
         st.subheader("ROC Curve")
-        RocCurveDisplay.from_estimator(model, X_test, Y_test).plot()
-        st.pyplot()
+        RocCurveDisplay.from_estimator(model, X_test, Y_test, ax=ax)
+        st.pyplot(fig)
     
     if "Precision-Recall Curve" in metrics_list:
         st.subheader("Precision-Recall Curve")
-        PrecisionRecallDisplay.from_estimator(model, X_test, Y_test).plot()
-        st.pyplot()
+        PrecisionRecallDisplay.from_estimator(model, X_test, Y_test, ax=ax)
+        st.pyplot(fig)
 
 
 def train_and_evaluate(model, X_train, Y_train, X_test, Y_test, metrics, class_names):
@@ -75,17 +84,25 @@ def main():
     st.sidebar.title("Control Panel")
 
     # Load the dataset
-    (X, Y) = load_ucimlrepo_mushroomdata()
+    st.sidebar.subheader("Select a dataset")
+    dataset = st.sidebar.selectbox("Available Datasets", ("Mushroom", "Breast Cancer", "Diabetes"))
+    if dataset == 'Mushroom':
+        (X, Y, class_names) = load_ucimlrepo_mushroomdata()
+    elif dataset == 'Breast Cancer':
+        (X, Y, class_names) = load_ucimlrepo_breastcancer()
+    elif dataset == 'Diabetes':
+        (X, Y, class_names) = load_ucimlrepo_diabetes_data()
+
     X_encoded = encode_labels(X)
     Y_encoded = encode_labels(Y)
-    class_names = ["edible", "poisonous"]
 
-    if st.sidebar.checkbox("Show Dataset", False):
-        st.subheader("Mushroom Dataset - Features (X)")
-        st.write(X_encoded)
-
-        st.subheader("Mushroom Dataset - Labels (Y)")
-        st.write(Y_encoded)
+    if st.sidebar.checkbox("Display Dataset", False):
+        encoded = st.sidebar.checkbox("Show Encoded", False)
+        st.subheader(f"Dataset Size: {len(X)}")
+        st.subheader(f"{dataset} - Features (Total: {X.shape[1]})")
+        st.write(X) if not encoded else st.write(X_encoded)
+        st.subheader(f"{dataset} - Labels")
+        st.write(Y) if not encoded else st.write(Y_encoded)
     
     # Split the data into training and testing sets
     X_train, X_test, Y_train, Y_test = train_test_split(X_encoded, Y_encoded, test_size=0.3, random_state=0)
