@@ -16,6 +16,8 @@ from models.train_evaluate import train_and_evaluate
 
 def main():
     st.title("Binary Classification")
+    st.write("Namaskara, Goededag and Hello!")
+    st.write("This is a simple binary classification web app that allows you to train and evaluate different classifiers on various datasets.")
 
     # Creates a sidebar that allows the user to modify the app
     st.sidebar.title("Control Panel")
@@ -23,6 +25,19 @@ def main():
     # Load the dataset
     st.sidebar.subheader("Select a dataset")
     dataset = st.sidebar.selectbox("Available Datasets", ("Mushroom", "Breast Cancer", "Diabetes"))
+
+    # Add instructions on how to use the app
+    st.subheader("Instructions")
+    st.markdown("""
+    1. **Open the sidebar**: If the sidebar is not visible, click the arrow on the top left to open the sidebar.
+    2. **Select a dataset**: Use the sidebar to choose a dataset from the available options.
+    3. **Display Dataset**: Optionally, check the "Display Dataset" box to view the dataset.
+    4. **Select a classifier**: Choose a classifier from the sidebar options.
+    5. **Adjust Hyperparameters**: Modify the hyperparameters for the selected classifier.
+    6. **Select Metrics**: Choose the metrics you want to evaluate.
+    7. **Classify**: Click the "Classify" button to train the model and view the selected metrics.
+    """)
+
     if dataset == 'Mushroom':
         (X, Y, class_names) = load_ucimlrepo_mushroomdata()
     elif dataset == 'Breast Cancer':
