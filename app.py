@@ -53,6 +53,7 @@ def plot_metrics(metrics_list: list, class_names: list, model=None, X_test=None,
         st.pyplot(fig)
     
     if "Precision-Recall Curve" in metrics_list:
+        fig, ax = plt.subplots()
         st.subheader("Precision-Recall Curve")
         PrecisionRecallDisplay.from_estimator(model, X_test, Y_test, ax=ax)
         st.pyplot(fig)
