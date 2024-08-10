@@ -3,80 +3,16 @@ import pandas as pd
 import streamlit as st
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import (
-    ConfusionMatrixDisplay,
-    PrecisionRecallDisplay,
-    RocCurveDisplay,
-    precision_score,
-    recall_score,
-)
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import SVC
-from ucimlrepo import fetch_ucirepo
-import matplotlib.pyplot as plt
 
-
-def load_ucimlrepo_data(dataset_id: int, class_names: list) -> tuple:
-    dataset = fetch_ucirepo(id=dataset_id)
-    return dataset.data.features, dataset.data.targets, class_names
-
-def load_ucimlrepo_mushroomdata() -> tuple:
-    return load_ucimlrepo_data(73, ["edible", "poisonous"])
-
-def load_ucimlrepo_breastcancer() -> tuple:
-    return load_ucimlrepo_data(15, ["benign", "malignant"])
-
-def load_ucimlrepo_diabetes_data() -> tuple:
-    return load_ucimlrepo_data(891, ["positive", "negative"])
-
-
-@st.cache_data
-def encode_labels(data: pd.DataFrame):
-    le = LabelEncoder()
-    for col in data.columns:
-        data[col] = le.fit_transform(data[col])
-    return data
-
-
-def plot_metrics(metrics_list: list, class_names: list, model=None, X_test=None, Y_test=None):
-    if "Confusion Matrix" in metrics_list:
-        fig, ax = plt.subplots()
-        st.subheader("Confusion Matrix")
-        ConfusionMatrixDisplay.from_estimator(model, X_test, Y_test, display_labels=class_names, ax=ax)
-        st.pyplot(fig)
-    
-    if "ROC Curve" in metrics_list:
-        fig, ax = plt.subplots()
-        st.subheader("ROC Curve")
-        RocCurveDisplay.from_estimator(model, X_test, Y_test, ax=ax)
-        st.pyplot(fig)
-    
-    if "Precision-Recall Curve" in metrics_list:
-        fig, ax = plt.subplots()
-        st.subheader("Precision-Recall Curve")
-        PrecisionRecallDisplay.from_estimator(model, X_test, Y_test, ax=ax)
-        st.pyplot(fig)
-
-
-def train_and_evaluate(model, X_train, Y_train, X_test, Y_test, metrics, class_names):
-    model.fit(X_train, np.ravel(Y_train))
-    accuracy = model.score(X_test, Y_test)
-    Y_pred = model.predict(X_test)
-    st.write(f"Accuracy: {accuracy:.2f}")
-    st.write(f"Precision: {precision_score(Y_test, Y_pred):.2f}")
-    st.write(f"Recall: {recall_score(Y_test, Y_pred):.2f}")
-
-    # Metrics Defintions
-    st.subheader("Metric Definitions")
-    st.markdown("""
-    - **Accuracy**: The ratio of correctly predicted instances to the total instances.
-    - **Precision**: The ratio of correctly predicted positive instances to the total predicted positive instances.
-    - **Recall**: The ratio of correctly predicted positive instances to the total actual positive instances.
-    """)
-
-    plot_metrics(metrics, class_names, model, X_test, Y_test)
-
+from data.load_data import (
+    load_ucimlrepo_mushroomdata,
+    load_ucimlrepo_breastcancer,
+    load_ucimlrepo_diabetes_data,
+)
+from preprocessing.encode_labels import encode_labels
+from models.train_evaluate import train_and_evaluate
 
 def main():
     st.title("Binary Classification")
