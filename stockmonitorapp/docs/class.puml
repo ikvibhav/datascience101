@@ -1,0 +1,24 @@
+
+@startuml stock_analyser
+
+class base_stock_reader
+{
+    - csvdata: Dataframe
+    + {abstract} def get_web_stock_data(self, web_data_source: str, stock_symbol: str, start_date: datetime, end_date: datetime) -> Dataframe
+    + def read_csv(self, file_path: str) -> Dataframe
+    + def plot_stock_data(self, data: Dataframe, column: str) -> None
+    + def get_moving_average(self, data: Dataframe, window_size: int, minimum_period: int) -> Dataframe 
+}
+
+class snp500_reader
+{
+    - tickerlist: List
+    + def get_stock_data(self, stock_symbol, start_date, end_date) -> Dataframe
+    + def get_snp500_tickerlist(self, url: str, save_format: str) -> List
+    + def get_snp500_ticker_price(self, url: str, ticker: str) -> Dataframe
+    + deg store_snp500_pricelist(self, url: str, save_location: str) -> None
+}
+
+base_stock_reader --|> snp500_reader
+
+@enduml
