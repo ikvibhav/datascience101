@@ -1,9 +1,7 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import Any, Dict, List
 
 import pandas as pd
-import pandas_datareader.data as web
 import yfinance as yf
 
 
@@ -55,3 +53,7 @@ class snp500_reader(stock_reader):
 
     def read_local_stock_data(self, file_path):
         return self.read_csv(file_path)
+
+    def correlation_analysis(self, tickers, period):
+        data = yf.download(tickers, period=period)
+        return data['Adj Close'].corr()

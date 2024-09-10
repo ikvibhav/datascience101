@@ -5,18 +5,13 @@ import streamlit as st
 import matplotlib.pyplot as plt 
 from matplotlib import style
 import logging
+import seaborn as sns
 
 style.use('ggplot')
 
 @st.cache_data
 @st.cache_resource
-def fetch_stock_data(source, stock_symbol, start_date, end_date):
-    stock_object = snp500_reader()
-    return stock_object.get_web_stock_data(source, stock_symbol, start_date, end_date)
-
-@st.cache_data
-@st.cache_resource
-def fetch_stock_data_period(source, stock_symbol, period):
+def fetch_stock_data_period(stock_symbol, period):
     stock_object = snp500_reader()
     return stock_object.get_web_stock_data_period(stock_symbol, period)
 
@@ -27,19 +22,15 @@ def main():
     st.write("Please select the stock you would like to track from the sidebar.")
 
     stock_list = ["TSLA", "NVDA", "AAPL", "GOOGL", "MSFT"]
-    selected_stock = st.sidebar.selectbox("Select a stock", stock_list)
-
-    # Dates do not work on mobile. To fix this, we can use the following code:
-    # start_date = st.sidebar.date_input("Start Date", dt.datetime(2019, 1, 1))
-    # end_date = st.sidebar.date_input("End Date", dt.datetime.now())
-    # data = fetch_stock_data('stooq', selected_stock, start_date, end_date)
-
-    # Add Radio button for selecting the period
-    period = st.sidebar.radio("Select the period", ["1mo", "3mo", "6mo", "1y", "2y", "5y", "10y", "ytd", "max"])
-    data = fetch_stock_data_period('stooq', selected_stock, period)
-
-    # Add Radio button for selecting an interactive chart
+    st.sidebar.title("1. Time Series Analysis")
     interactive_chart = st.sidebar.checkbox("Interactive Chart", value=False)
+    selected_stock = st.sidebar.selectbox("Select a stock", stock_list)
+    period = st.sidebar.radio("Select the period", ["1mo", "3mo", "6mo", "1y", "2y", "5y", "10y", "ytd", "max"])
+    data = fetch_stock_data_period(selected_stock, period)
+
+    # Add a checkbox for Correlation Analysis
+    st.sidebar.title("2. Correlation Analysis")
+    correlanalysis = st.sidebar.checkbox("Correlation Analysis", value=False)
 
     logging.debug(f"Data: {data}")
 
@@ -81,6 +72,19 @@ def main():
             st.pyplot(fig)
     else:
         st.write("No data available for the selected stock and date range.")
+    
+    if correlanalysis:
+        period_corr = st.sidebar.radio("Select the period", ["1mo", "3mo", "6mo", "1y", "2y"])
+        st.subheader("Correlation Analysis")
+        st.write(f"Stocks - {stock_list}, Period - {period_corr}")
+        stock_object = snp500_reader()
+        df_corr = stock_object.correlation_analysis(stock_list, period_corr)
+        fig, ax = plt.subplots()
+        sns.heatmap(df_corr, cmap='coolwarm', annot=True)
+        # Add a title to the heatmap
+        ax.set_title(f"Correlation Matrix ({period_corr})")
+        st.pyplot(fig)
+        
 
 if __name__ == "__main__":
     main()
