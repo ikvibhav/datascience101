@@ -2,6 +2,8 @@
 *.pyc
 *.pyo
 *.__pycache__
+__pycache__/
+.pytest_cache/
 
 # Environments
 .env
@@ -12,5 +14,10 @@ ENV/
 env.bak/
 venv.bak/
 
+# Files
+*.csv
+*.zip
+
 # Misc
 backups/
+datasets/
