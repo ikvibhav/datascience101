@@ -1,5 +1,6 @@
 from utils.base_stock_reader import snp500_reader
 from models.moving_average import moving_average
+from models.percentage_changes import yearly_percentage_change
 import datetime as dt
 import streamlit as st
 import matplotlib.pyplot as plt 
@@ -21,7 +22,7 @@ def main():
     st.write("This app will allow you to track the stock prices of your favorite companies.")
     st.write("Please select the stock you would like to track from the sidebar.")
 
-    stock_list = ["TSLA", "NVDA", "AAPL", "GOOGL", "MSFT"]
+    stock_list = ["^GSPC", "AMZN", "TSLA", "NVDA", "AAPL", "GOOGL", "MSFT"]
     st.sidebar.title("1. Time Series Analysis")
     interactive_chart = st.sidebar.checkbox("Interactive Chart", value=False)
     selected_stock = st.sidebar.selectbox("Select a stock", stock_list)
@@ -31,6 +32,10 @@ def main():
     # Add a checkbox for Correlation Analysis
     st.sidebar.title("2. Correlation Analysis")
     correlanalysis = st.sidebar.checkbox("Correlation Analysis", value=False)
+
+    # Add a checkbox for Yearly Percentage Changes
+    st.sidebar.title("3. Yearly Percentage Changes")
+    yearlypct = st.sidebar.checkbox("Yearly Percentage Changes", value=False)
 
     logging.debug(f"Data: {data}")
 
@@ -84,7 +89,14 @@ def main():
         # Add a title to the heatmap
         ax.set_title(f"Correlation Matrix ({period_corr})")
         st.pyplot(fig)
+    
+    if yearlypct:
+        period_corr = st.sidebar.radio("Select the period (years)", ["5", "10", "20"])
+        st.subheader("Yearly Percentage Changes")
+        st.write(f"Selected Period - {period_corr} years")
+        stock_object = snp500_reader()
+        df_pct = yearly_percentage_change(stock_list)
+        st.write(df_pct.tail(int(period_corr)))
         
-
 if __name__ == "__main__":
     main()

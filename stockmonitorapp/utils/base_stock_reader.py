@@ -42,7 +42,7 @@ class stock_reader(ABC):
 class snp500_reader(stock_reader):
 
     def get_web_stock_data_period(self, stock_symbol, period):
-        return yf.download(stock_symbol, period=period)
+        return yf.download(tickers=stock_symbol, period=period)
 
     def get_web_stock_data(self, stock_symbol, start_date, end_date):
         return yf.download(stock_symbol, start=start_date, end=end_date)
