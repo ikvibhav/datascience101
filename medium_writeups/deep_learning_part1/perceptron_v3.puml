@@ -1,0 +1,62 @@
+' Perceptron Neural Network Diagram
+' This PlantUML diagram visualizes a simple perceptron neural network with three layers:
+' - Input layer (layer 1) with three input nodes (x1, x2, x3)
+' - Hidden layer (layer 2) with three nodes (a12, a22, a32)
+' - Output layer (layer 3) with one output node (O)
+' 
+' Reference: https://gist.github.com/thigm85/5653059
+digraph G {
+
+    rankdir=LR
+	splines=line
+        
+    node [fixedsize=true, label=""];
+
+
+	subgraph cluster_1 {
+		color=white;
+		node [style=solid,color=Blue, shape=circle];
+		x1 [label="x1"];
+        x2 [label="x2"];
+		label = "input layer";
+	}
+
+	subgraph cluster_2 {
+		color=white;
+		node [style=solid,color=seagreen2, shape=circle];
+		Z1 [label="z1"];
+	}
+
+	subgraph cluster_3 {
+		color=white;
+		node [style=solid,color=Red, shape=circle];
+		Y1 [label="y1"];
+		label="output layer";
+	}
+
+
+	subgraph cluster_4 {
+		color=white;
+		node [style=solid,color=seagreen2, shape=circle];
+		Z2 [label="z2"];
+	}
+
+	subgraph cluster_5 {
+		color=white;
+		node [style=solid,color=Red, shape=circle];
+		Y2 [label="y2"];
+	}
+
+    x1 -> Z1; 
+    x2 -> Z1;
+    x1 -> Z2;
+	x2 -> Z2;
+    Z1 -> Y1 [label="y1 = g(z1)"];
+	Z2 -> Y2 [label="y2 = g(z2)"];
+
+    labeljust="c";
+    label = <<table border="0" cellborder="0" cellspacing="0">
+                <tr><td><font point-size="20">z = w01 + w02 + w11*x1 + w12*x1 + w21*x2 + w22*x2 </font></td></tr>
+             </table>>;
+
+}
