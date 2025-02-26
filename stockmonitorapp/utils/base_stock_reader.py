@@ -5,7 +5,7 @@ import pandas as pd
 import yfinance as yf
 
 
-class stock_reader(ABC):
+class StockReader(ABC):
 
     @abstractmethod
     def get_web_stock_data_period(
@@ -18,7 +18,6 @@ class stock_reader(ABC):
     @abstractmethod
     def get_web_stock_data(
         self,
-        web_data_source: str,
         stock_symbol: str,
         start_date: datetime,
         end_date: datetime,
@@ -27,33 +26,117 @@ class stock_reader(ABC):
 
     @abstractmethod
     def save_stock_data(
-        self, stock_symbol: str, start_date: datetime, end_date: datetime, file_path=str
+        self,
+        stock_symbol: str,
+        start_date: datetime,
+        end_date: datetime,
+        file_path: str
     ) -> None:
         pass
 
     @abstractmethod
-    def read_local_stock_data(self, file_path):
+    def read_local_stock_data(self, file_path: str):
         pass
 
-    def read_csv(self, file_path: str):
+    def read_csv(self, file_path: str) -> pd.DataFrame:
         return pd.read_csv(file_path)
 
 
-class snp500_reader(stock_reader):
+class Snp500Reader(StockReader):
 
-    def get_web_stock_data_period(self, stock_symbol, period):
-        return yf.download(tickers=stock_symbol, period=period)
+    def get_web_stock_data_period(self,
+                                  stock_symbol: str,
+                                  period: str) -> pd.DataFrame:
+        """
+        Get stock data from Yahoo Finance API for a given stock symbol and period
 
-    def get_web_stock_data(self, stock_symbol, start_date, end_date):
-        return yf.download(stock_symbol, start=start_date, end=end_date)
+        Args:
+            stock_symbol: str: The stock symbol to get data for
+            period: str: The period to get data for
 
-    def save_stock_data(self, stock_symbol, start_date, end_date, output_file_path):
-        data = self.get_stock_data(stock_symbol, start_date, end_date)
+        Returns:
+            pd.DataFrame: The stock data
+        """
+        download_df = yf.download(tickers=stock_symbol, period=period)
+
+        if isinstance(download_df.columns, pd.MultiIndex):
+            download_df.columns = download_df.columns.droplevel(1)
+
+        return download_df
+
+    def get_web_stock_data(self,
+                           stock_symbol: str,
+                           start_date: datetime,
+                           end_date: datetime) -> pd.DataFrame:
+        """
+        Get stock data from Yahoo Finance API for a given stock symbol and date range
+
+        Args:
+            stock_symbol: str: The stock symbol to get data for
+            start_date: datetime: The start date to get data for
+            end_date: datetime: The end date to get data for
+
+        Returns:
+            pd.DataFrame: The stock data
+        """
+
+        download_df = yf.download(stock_symbol, start=start_date, end=end_date)
+
+        if isinstance(download_df.columns, pd.MultiIndex):
+            download_df.columns = download_df.columns.droplevel(1)
+
+        return download_df
+
+    def save_stock_data(self,
+                        stock_symbol: str,
+                        start_date: datetime,
+                        end_date: datetime,
+                        output_file_path: str) -> None:
+        """
+        Save stock data from Yahoo Finance API for a given stock symbol and date range to a CSV file
+
+        Args:
+            stock_symbol: str: The stock symbol to get data for
+            start_date: datetime: The start date to get data for
+            end_date: datetime: The end date to get data for
+            output_file_path: str: The path to save the CSV file to
+        
+        Returns:
+            None
+        """
+        data = self.get_web_stock_data(stock_symbol, start_date, end_date)
         data.to_csv(output_file_path)
 
-    def read_local_stock_data(self, file_path):
+    def read_local_stock_data(self,
+                              file_path: str) -> pd.DataFrame:
+        """
+        Read stock data from a CSV file
+
+        Args:
+            file_path: str: The path to the CSV file
+        
+        Returns:
+            pd.DataFrame: The stock data
+        """
         return self.read_csv(file_path)
 
-    def correlation_analysis(self, tickers, period):
+    def correlation_analysis(self,
+                             tickers: str,
+                             period: str) -> pd.DataFrame:
+        """
+        Get the correlation between the adjusted close prices of the given stock symbols
+
+        Args:
+            tickers: str: The stock symbols to get data for
+            period: str: The period to get data for
+        
+        Returns:
+            pd.DataFrame: The correlation between the adjusted close prices of the given stocks
+        """
         data = yf.download(tickers, period=period)
-        return data['Adj Close'].corr()
+        return data['Close'].corr()
+
+
+if __name__ == "__main__":
+    stock_object = Snp500Reader()
+    data = stock_object.get_web_stock_data_period("AAPL", "1mo")

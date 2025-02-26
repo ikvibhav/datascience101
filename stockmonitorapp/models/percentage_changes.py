@@ -1,6 +1,8 @@
-import yfinance as yf
-import pandas as pd
 from typing import List
+
+import pandas as pd
+import yfinance as yf
+
 
 def yearly_percentage_change(stock_list: list) -> pd.DataFrame:
     yearly_changes = pd.DataFrame()
