@@ -1,20 +1,19 @@
-from utils.base_stock_reader import snp500_reader
+import matplotlib.pyplot as plt
+import seaborn as sns
+import streamlit as st
+from matplotlib import style
 from models.moving_average import moving_average
 from models.percentage_changes import yearly_percentage_change
-import datetime as dt
-import streamlit as st
-import matplotlib.pyplot as plt 
-from matplotlib import style
-import logging
-import seaborn as sns
+from utils.base_stock_reader import Snp500Reader
 
 style.use('ggplot')
 
 @st.cache_data
 @st.cache_resource
 def fetch_stock_data_period(stock_symbol, period):
-    stock_object = snp500_reader()
+    stock_object = Snp500Reader()
     return stock_object.get_web_stock_data_period(stock_symbol, period)
+
 
 def main():
     st.title("Stock Monitor")
@@ -36,8 +35,6 @@ def main():
     # Add a checkbox for Yearly Percentage Changes
     st.sidebar.title("3. Yearly Percentage Changes")
     yearlypct = st.sidebar.checkbox("Yearly Percentage Changes", value=False)
-
-    logging.debug(f"Data: {data}")
 
     if data is not None and not data.empty:
 
@@ -82,7 +79,7 @@ def main():
         period_corr = st.sidebar.radio("Select the period", ["1mo", "3mo", "6mo", "1y", "2y"])
         st.subheader("Correlation Analysis")
         st.write(f"Stocks - {stock_list}, Period - {period_corr}")
-        stock_object = snp500_reader()
+        stock_object = Snp500Reader()
         df_corr = stock_object.correlation_analysis(stock_list, period_corr)
         fig, ax = plt.subplots()
         sns.heatmap(df_corr, cmap='coolwarm', annot=True)
@@ -94,9 +91,9 @@ def main():
         period_corr = st.sidebar.radio("Select the period (years)", ["5", "10", "20"])
         st.subheader("Yearly Percentage Changes")
         st.write(f"Selected Period - {period_corr} years")
-        stock_object = snp500_reader()
         df_pct = yearly_percentage_change(stock_list)
         st.write(df_pct.tail(int(period_corr)))
-        
+
+
 if __name__ == "__main__":
     main()
