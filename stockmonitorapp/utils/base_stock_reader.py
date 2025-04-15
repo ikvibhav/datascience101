@@ -140,3 +140,4 @@ class Snp500Reader(StockReader):
 if __name__ == "__main__":
     stock_object = Snp500Reader()
     data = stock_object.get_web_stock_data_period("AAPL", "1mo")
+    print(data)
