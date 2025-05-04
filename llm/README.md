@@ -6,3 +6,9 @@
 - Langchain
     - Makes it easy to use LLM models
     - Allows to use multiple models together and make more advanced applications and just deal with LLMs
+- Retrieval-Augmented Generation (RAG) -
+    - Its a process of optimizing the output of an LLM, so that it references an authoritative knowledge base outside its training data sources before generating a response
+    - RAG extends powerful capabilites of LLMs to specific domains of an organizations's internal knowledge base, thus removing the ned to retrain the model
+    - Authoritative knowledge base ensures that the model can provice accurate, credible and contexually relevant information
+- LangFlow -
+    - Used to create AIProjects (Flows)
