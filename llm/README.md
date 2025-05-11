@@ -20,3 +20,6 @@
         - Recommendation Systems -  Suggest Items based on vector similiarity
         - Image/Audio Search - Find similiar images using embeddings
     - FAISS (Facebook AI Similarity Search)
+- OLLAMA
+    - OLLAMA is a platform designed to run and manage LLMs locally on a machine.
+    - It focuses on privacy, efficiency and offline capabilities
