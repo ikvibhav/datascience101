@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11435:11434"  # Exposes Ollama on the host. Changed Host port to 11435 to avoid conflict with local Ollama
+    volumes:
+      - ollama_models:/root/.ollama  # Persist models
+
+  langflow:
+    image: langflowai/langflow:latest
+    container_name: langflow
+    ports:
+      - "7860:7860"  # Exposes Langflow web UI
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434  # Tell Langflow where to find Ollama
+    depends_on:
+      - ollama  # Wait for Ollama to be ready
+
+volumes:
+  ollama_models:
