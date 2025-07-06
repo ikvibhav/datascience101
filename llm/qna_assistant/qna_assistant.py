@@ -3,7 +3,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from vector_db import get_vector_store_retriever
 
 
-class PizzaQAAssistant:
+class QnAAssistant:
     """Handles pizza restaurant Q&A using LLM and vector retriever."""
 
     def __init__(self, model_name: str = "llama3.2"):
@@ -26,7 +26,7 @@ class PizzaQAAssistant:
 
 
 def main():
-    assistant = PizzaQAAssistant()
+    assistant = QnAAssistant()
     print("Pizza Restaurant Q&A Assistant. Type 'exit' to quit.")
     while True:
         print("--" * 20)

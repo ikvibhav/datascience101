@@ -23,3 +23,6 @@ backups/
 datasets/
 database/
 tokens.txt
+
+# Exceptions
+!llm/qna_assistant/reviews.csv

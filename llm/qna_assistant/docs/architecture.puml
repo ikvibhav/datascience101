@@ -1,0 +1,22 @@
+@startuml
+
+title QnA Assistant Architecture
+
+class QnAAssistant {
+    - model: OllamaLLM
+    - prompt: ChatPromptTemplate
+    - chain
+    - retriever
+    + __init__(model_name: str)
+    + answer(user_input: str): str
+}
+
+class OllamaLLM
+class ChatPromptTemplate
+class Retriever
+
+QnAAssistant --> OllamaLLM
+QnAAssistant --> ChatPromptTemplate
+QnAAssistant --> Retriever : retriever
+
+@enduml
