@@ -17,8 +17,9 @@ venv.bak/
 # Files
 *.csv
 *.zip
-*.txt
 
 # Misc
 backups/
 datasets/
+database/
+tokens.txt
